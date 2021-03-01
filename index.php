@@ -1,0 +1,21 @@
+<?php
+//error_reporting(E_ALL);
+
+require_once 'pulsCenApi.php';
+require_once 'db.php';
+require_once __DIR__ . '/vendor/autoload.php';
+
+use AmoCRM\Client;
+
+$amoCRM = new Client('emomalisharifov98', 'emomali.sharifov98@mail.ru', 'def502009d540bda8d602f26a8b641f61e2de50f9ddfe2c232575ad95bfc87e85ed03ccca15e5d8f7b234e67ba8601da759910d7b783519595041fe3b3a4edd48c4373e3fb2db1fde92b662f988543f0269f97a03487d26ffe4c2c2f5f56a095728629b6bd3d8cc2b03801f7dda6e25ede595f697af71c054cb895397317fff316a0e1b21feb191215b212711390335f28326535ac481844e8bfbf475906d2eb23d9a41b7c8ab16088c09d7b03fe7758a45809c2661d04b1d9e45718f8ec3ae0badee903adeb4764fd5814e85ed1d93d5190a78a623e72fecd866c25cd557715169b3f1301fb249d1b3ec34960867f40fb0faaa8a90d77440562c89a338f1ac511f7c9ed36a874e815d24da32a3194ee4aa48de6553f7a1c73b7e45001fff73546a6d252ebc8307af37b66fe82004c57fe4f42a75524d4be4b6d383d4b6d3946e8bf64feabbb59f091450b6d3214e7a74abaf13c1729212504d5dbe78a9aefa4f48c68440f99d9ee53cd8f1f8ab76b6224c4a10bb3f574d8469d61bcbd9c39d33ad475a5936d40460864a50a6f73f8a760f9b245a47b96834ace4d9afadb624d9bf17b4ec7a7d51a0e26e918e0279e9873c408eb25593081b684cef8a3');
+
+if($lastRecord['order_id'] !== $lastOrderId) return 0;
+
+call_user_func_array();
+
+/*
+    - занести последний id в бд
+    - перебрать сделки и дойти до последней заявки
+    - перебранные сделки занести в црм
+
+*/
