@@ -1,6 +1,7 @@
 <?php
 //e4dt27aVuDKLQPJ0szOtagjSFqILJ5xc
-//https://market-api.au.ru/doc.html#auth_token_post
+//https://market-api.au.ru/v1/auth/token
+//$url = 'https://au.ru/login/?returnUrl=https%3A%2F%2Fau.ru%2F';
 //https://market-api.au.ru/v1/categories/
 //https://market-api.au.ru/v1/items/
 //https://market-api.au.ru/v1/me/
@@ -8,15 +9,31 @@
 /// {
 //    "token": "MSmbpE0Qom66k1f67QuewJ9lA7uvhIAg" //Аторизационный токен который необходимо передавать в заголовке X-Auth-Token
 //}
+function curlLogin(){
+    $url = 'https://market-api.au.ru/v1/auth/token/';
+    $params = array(
+        'login' => 'ТЕМАСФО',
+        'password' => '123456Qwe',
+    );
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+    // Или предать массив строкой:
+    // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($array, '', '&'));
 
-$myCurl = curl_init();
-curl_setopt_array($myCurl, array(
-    CURLOPT_URL => 'https://market-api.au.ru/doc.html#auth_token_post',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => http_build_query(array(/*здесь массив параметров запроса*/))
-));
-$response = curl_exec($myCurl);
-curl_close($myCurl);
+    curl_setopt($ch, CURLOPT_COOKIEFILE, 'cookie.txt');
+    curl_setopt($ch, CURLOPT_COOKIEJAR, 'cookie.txt');
 
-echo "Ответ на Ваш запрос: ".$response;
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+    $result = curl_exec($ch);
+    curl_close($ch);
+
+    echo $result;
+
+}
+curlLogin();
+
