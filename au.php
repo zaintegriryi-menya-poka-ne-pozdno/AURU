@@ -67,8 +67,8 @@ function curlLogin(){
 //            echo '<pre>';
 //            echo $itemName = $rrr[$i]->itemName;
 //            echo '<pre>';
-//            echo $questionUrl = $rrr[$i]->questionUrl;
-//            echo '<pre>';
+            var_dump($rrr[$i]);
+            echo '<pre>';
             var_dump('проверка $rrr[$i]->dateCreate >= $monthStart');
             var_dump('postaddNotes');
             postaddNotes($rrr[$i],$subdomain);
