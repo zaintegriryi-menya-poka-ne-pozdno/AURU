@@ -14,6 +14,7 @@
     //addLeads($subdomain);
 //    p(allLeads($subdomain));
 //    p(addLeads($subdomain));
+//    allLeads($subdomain);
     function p($input,$die=0)
     {
         echo '<pre>';
@@ -25,10 +26,17 @@
     }
 //    p(postaddNotes($rr,$subdomain));
     function postaddNotes($auru,$subdomain){
-        $idadd = addLeads($auru,$subdomain)->_embedded->items[0]->id;
-        var_dump($auru);
-        $addNotes = addNotes($auru,$idadd,$subdomain);
-        return $addNotes;
+        var_dump('postaddNotes');
+        $idadd = addLeads($auru,$subdomain);
+       var_dump($idadd);
+        var_dump('$idadd');
+//        var_dump($idadd+ "  Это $idadd");
+//        $idgetNotes = getNotes($idadd,$subdomain);
+//        var_dump($idgetNotes+ "  Это $idgetNotes");
+//        var_dump($idadd.' $idadd');
+        var_dump('addNotes');
+        addNotes($auru,$idadd,$subdomain);
+        return $idadd;
     }
     // авторизация
     function amoAuth($user, $subdomain)
@@ -84,45 +92,145 @@
 //        $rr = json_decode($out, false);
 //        curl_close($curl); #Завершаем сеанс cURL
 //        getError($code);
+//        var_dump($rr);
+//        var_dump('allLeads');
 //        return $rr;
 //    }
     function addLeads($auru,$subdomain)
     {
-        $data['add'] = array(
-            array(
-                'name' => 'AU.RU',
-                'created_by'=> 0,
-                'price'=> 20000,
-
-
-            )
-        );
-//        'notes'=> array(
-//        'params' =>array(
-//            'text'=> 'Сообщение из AU.RU'
-//        )
-//    )
-    #Формируем ссылку для запроса
-        $link = 'https://' . $subdomain . '.amocrm.ru/api/v2/leads';
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-API-client/1.0');
-        curl_setopt($curl, CURLOPT_URL, $link);
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-        curl_setopt($curl, CURLOPT_HEADER, false);
-        curl_setopt($curl, CURLOPT_COOKIEFILE, dirname(__FILE__) . '/cookie.txt'); #PHP>5.3.6 dirname(__FILE__) -> __DIR__
-        curl_setopt($curl, CURLOPT_COOKIEJAR, dirname(__FILE__) . '/cookie.txt'); #PHP>5.3.6 dirname(__FILE__) -> __DIR__
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-        $out = curl_exec($curl); #Инициируем запрос к API и сохраняем ответ в переменную
-        $rr = json_decode($out, false);
-        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $link = 'https://' . $subdomain . '.amocrm.ru/api/v4/leads';
+        $curl=curl_init(); #Сохраняем дескриптор сеанса cURL
+        #Устанавливаем необходимые опции для сеанса cURL
+        curl_setopt($curl,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($curl,CURLOPT_USERAGENT,'amoCRM-API-client/1.0');
+        curl_setopt($curl,CURLOPT_URL,$link);
+        curl_setopt($curl,CURLOPT_CUSTOMREQUEST,'GET');
+        curl_setopt($curl,CURLOPT_HTTPHEADER,array(
+            'X-Requested-With: XMLHttpRequest',
+        ));
+        curl_setopt($curl,CURLOPT_COOKIEFILE,dirname(__FILE__).'/cookie.txt');
+        curl_setopt($curl,CURLOPT_COOKIEJAR,dirname(__FILE__).'/cookie.txt');
+        curl_setopt($curl,CURLOPT_SSL_VERIFYPEER,0);
+        curl_setopt($curl,CURLOPT_SSL_VERIFYHOST,0);
+        $out=curl_exec($curl); #Инициируем запрос к API и сохраняем ответ в переменную
+        $code=curl_getinfo($curl,CURLINFO_HTTP_CODE); #Получим HTTP-код ответа сервера
+        $allleads = json_decode($out, false);
+        curl_close($curl); #Завершаем сеанс cURL
         getError($code);
-//        var_dump($rr->_embedded->leads[0]->id);
-//        $idnewleads= (int)$rr->_embedded->leads[0]->id;
-        return $rr;
+        if($allleads->_embedded->leads != null) {
+            for ($i = 0; $i < count($allleads->_embedded->leads); ++$i) {
+                $idvcrm = (preg_replace("/[^0-9]/", '',$allleads->_embedded->leads[$i]->name));
+                $useridvcrmintval = (int)($idvcrm);
+                if ($useridvcrmintval == $auru->userId) {
+                    $idleadforgetnotes = $allleads->_embedded->leads[$i]->id;
+                    var_dump($idleadforgetnotes);
+                    $link = 'https://' . $subdomain . '.amocrm.ru/api/v4/leads/' . $idleadforgetnotes . '/notes';
+                    $curl = curl_init(); #Сохраняем дескриптор сеанса cURL
+                    #Устанавливаем необходимые опции для сеанса cURL
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-API-client/1.0');
+                    curl_setopt($curl, CURLOPT_URL, $link);
+                    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+                    curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                        'X-Requested-With: XMLHttpRequest',
+                    ));
+                    curl_setopt($curl, CURLOPT_COOKIEFILE, dirname(__FILE__) . '/cookie.txt');
+                    curl_setopt($curl, CURLOPT_COOKIEJAR, dirname(__FILE__) . '/cookie.txt');
+                    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+                    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+                    $out = curl_exec($curl); #Инициируем запрос к API и сохраняем ответ в переменную
+                    $code = curl_getinfo($curl, CURLINFO_HTTP_CODE); #Получим HTTP-код ответа сервера
+                    $getNotesLeads = json_decode($out, false);
+                    curl_close($curl); #Завершаем сеанс cURL
+                    getError($code);
+                    var_dump($getNotesLeads);
+                    var_dump('$getNotesLeads');
+//                    var_dump($getNotesLeads->_embedded->notes->params->text);
+                    if ($getNotesLeads->_embedded->notes != null) {
+                        for ($i = 0; $i <= count($getNotesLeads->_embedded->notes); ++$i) {
+                            $getIdLeads = $getNotesLeads->_embedded->notes[$i]->entity_id;
+//                            $getNotesText = $getNotesLeads->_embedded->notes[$i]->id;
+                            $getidNotesCRM = (int)(substr($getNotesLeads->_embedded->notes[$i]->params->text, 0, 8));
+                            $getidNotesAU = $auru->id;
+                            var_dump($getidNotesCRM);
+                            var_dump('$getidNotesAU');
+                            var_dump($getidNotesAU);
+                            var_dump('$getidNotesAU');
+                            if ($getidNotesCRM == $getidNotesAU) {
+                                    return true;
+                            }
+                            else{
+                                var_dump($idleadforgetnotes);
+                                var_dump('$idleadforgetnotes');
+                                return $idleadforgetnotes;
+                            }
+                        }
+                    }
+                    return $allleads->_embedded->leads[$i]->id;
+                }
+                else{
+                    $data['add'] = array(
+                        array(
+                            'name' => 'AU.RU '.$auru->userId,
+                            'created_by'=> 0,
+                            'price'=> 20000,
+
+
+                        )
+                    );
+                    #Формируем ссылку для запроса
+                    $link = 'https://' . $subdomain . '.amocrm.ru/api/v2/leads';
+                    $curl = curl_init();
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-API-client/1.0');
+                    curl_setopt($curl, CURLOPT_URL, $link);
+                    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+                    curl_setopt($curl, CURLOPT_HEADER, false);
+                    curl_setopt($curl, CURLOPT_COOKIEFILE, dirname(__FILE__) . '/cookie.txt'); #PHP>5.3.6 dirname(__FILE__) -> __DIR__
+                    curl_setopt($curl, CURLOPT_COOKIEJAR, dirname(__FILE__) . '/cookie.txt'); #PHP>5.3.6 dirname(__FILE__) -> __DIR__
+                    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+                    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+                    $out = curl_exec($curl); #Инициируем запрос к API и сохраняем ответ в переменную
+                    $rr = json_decode($out, false);
+                    $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                    getError($code);
+                    return $rr->_embedded->items[0]->id;
+                }
+            }
+        }
+        else{
+            var_dump('Leads Null');
+            $data['add'] = array(
+                array(
+                    'name' => 'AU.RU '.$auru->userId,
+                    'created_by'=> 0,
+                    'price'=> 20000,
+
+
+                )
+            );
+            #Формируем ссылку для запроса
+            $link = 'https://' . $subdomain . '.amocrm.ru/api/v2/leads';
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-API-client/1.0');
+            curl_setopt($curl, CURLOPT_URL, $link);
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+            curl_setopt($curl, CURLOPT_HEADER, false);
+            curl_setopt($curl, CURLOPT_COOKIEFILE, dirname(__FILE__) . '/cookie.txt'); #PHP>5.3.6 dirname(__FILE__) -> __DIR__
+            curl_setopt($curl, CURLOPT_COOKIEJAR, dirname(__FILE__) . '/cookie.txt'); #PHP>5.3.6 dirname(__FILE__) -> __DIR__
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+            $out = curl_exec($curl); #Инициируем запрос к API и сохраняем ответ в переменную
+            $rr = json_decode($out, false);
+            $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            getError($code);
+            return $rr->_embedded->items[0]->id;
+        }
     }
 
     // обработчик ошибок amoCRM

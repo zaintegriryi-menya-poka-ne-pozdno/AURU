@@ -1,13 +1,20 @@
 <?php
-function addNotes($auru,$rr,$subdomain){
+//require_once('otvetNotes.php');
+function addNotes($auru,$idadd,$subdomain){
+    var_dump('зашли addNotes');
     $text = array(array(
-        "entity_id"=>$rr,
+        "entity_id"=>$idadd,
         "note_type"=> "common",
         "params"=>array(
-            "text" => $auru->itemName." ".$auru->quest,
+            "text" => $auru->id."\n Товар с AU.RU: ".$auru->itemName.
+                "\n Вопрос клиента: ".$auru->quest.
+                " \n Дата вопроса: ".$auru->dateCreate.
+                " \n Cсылка на товар AU.RU: ".$auru->questionUrl.
+            " \n Логин в AU.RU: ".$auru->login,
         )
     )
     );
+    var_dump(json_encode($text));
     $link = 'https://' . $subdomain . '.amocrm.ru/api/v4/leads/notes';
     $curl=curl_init(); #Сохраняем дескриптор сеанса cURL
     #Устанавливаем необходимые опции для сеанса cURL
@@ -26,7 +33,7 @@ function addNotes($auru,$rr,$subdomain){
     $notes = json_decode($out, false);
     $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     getError($code);
-    return $rr;
+    return $notes;
 }
 //// обработчик ошибок amoCRM
 //    function getError($code)

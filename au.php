@@ -10,19 +10,8 @@ require_once('dobavitvamocrm.php');
 /// {
 //    "token": "MSmbpE0Qom66k1f67QuewJ9lA7uvhIAg" //Аторизационный токен который необходимо передавать в заголовке X-Auth-Token
 //}
-
-$host_db= 'localhost';
-$user_db = 'u0605_u0605727';
-$password_db = '84kf_Ll3';
-$db = 'u0605727_auamoapi';
-$mysqli = new mysqli($host_db, $user_db, $password_db, $db);
-if($mysqli->connect_errno){
-    file_put_contents('db_errors.txt', "(".$mysqli->connect_errno.") ".$mysqli->connect_error);
-    echo "(".$mysqli->connect_errno.") ".$mysqli->connect_error;
-}
-$mysqli->query("SET NAMES 'utf8'");
-curlLogin($mysqli);
-function curlLogin($mysqli){
+curlLogin();
+function curlLogin(){
     $url = 'https://market-api.au.ru/v1/auth/token/';
     $subdomain = 'emomalisharifov98yandexru';
     $params = array(
@@ -59,27 +48,30 @@ function curlLogin($mysqli){
     curl_close($ch);
     echo '<pre>';
     $rrr = (array_reverse($rr));
-    $monthStart = date('Y-m-01');
-    for($i = 0; $i < count($rrr); ++$i) {
-        if($monthStart <= $rrr[$i]->dateCreate) {
-            echo '<pre>';
-            echo $id = $rrr[$i]->id;
-            echo '<pre>';
-            echo $lotId = $rrr[$i]->lotId;
-            echo '<pre>';
-            echo $userId = $rrr[$i]->userId;
-            echo '<pre>';
-            echo $quest = $rrr[$i]->quest;
-            echo '<pre>';
-            echo $dateCreate = $rrr[$i]->dateCreate;
-            echo '<pre>';
-            echo $login = $rrr[$i]->login;
-            echo '<pre>';
-            echo $itemName = $rrr[$i]->itemName;
-            echo '<pre>';
-            echo $questionUrl = $rrr[$i]->questionUrl;
-            echo '<pre>';
-            var_dump(postaddNotes($rrr[$i],$subdomain));
+    $monthStart = '2021-03-17T00:00:00.087Z';
+    $monthEnd = '2021-03-28T00:00:00.087Z';
+    for($i = 0; $i <= count($rrr); ++$i) {
+        if($rrr[$i]->dateCreate >= $monthStart && $rrr[$i]->dateCreate <= $monthEnd) {
+//            echo '<pre>';
+//            echo $id = $rrr[$i]->id;
+//            echo '<pre>';
+//            echo $lotId = $rrr[$i]->lotId;
+//            echo '<pre>';
+//            echo $userId = $rrr[$i]->userId;
+//            echo '<pre>';
+//            echo $quest = $rrr[$i]->quest;
+//            echo '<pre>';
+//            echo $dateCreate = $rrr[$i]->dateCreate;
+//            echo '<pre>';
+//            echo $login = $rrr[$i]->login;
+//            echo '<pre>';
+//            echo $itemName = $rrr[$i]->itemName;
+//            echo '<pre>';
+//            echo $questionUrl = $rrr[$i]->questionUrl;
+//            echo '<pre>';
+            var_dump('проверка $rrr[$i]->dateCreate >= $monthStart');
+            var_dump('postaddNotes');
+            postaddNotes($rrr[$i],$subdomain);
 
         }
 
@@ -109,5 +101,3 @@ function curlLogin($mysqli){
 
 
 ?>
-
-
