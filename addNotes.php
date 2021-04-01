@@ -1,39 +1,18 @@
 <?php
 //require_once('otvetNotes.php');
-function addNotes($auru,$idadd,$subdomain){
-    var_dump('зашли addNotes');
-    $text = array(array(
-        "entity_id"=>$idadd,
-        "note_type"=> "common",
-        "params"=>array(
-            "text" => $auru->id."\n Товар с AU.RU: ".$auru->itemName.
-                "\n Вопрос клиента: ".$auru->quest.
-                " \n Дата вопроса: ".$auru->dateCreate.
-                " \n Cсылка на товар AU.RU: ".$auru->questionUrl.
-            " \n Логин в AU.RU: ".$auru->login,
-        )
-    )
-    );
-    var_dump(json_encode($text));
-    $link = 'https://' . $subdomain . '.amocrm.ru/api/v4/leads/notes';
-    $curl=curl_init(); #Сохраняем дескриптор сеанса cURL
-    #Устанавливаем необходимые опции для сеанса cURL
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-API-client/1.0');
-    curl_setopt($curl, CURLOPT_URL, $link);
-    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
-    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($text));
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    curl_setopt($curl, CURLOPT_HEADER, false);
-    curl_setopt($curl, CURLOPT_COOKIEFILE, dirname(__FILE__) . '/cookie.txt'); #PHP>5.3.6 dirname(__FILE__) -> __DIR__
-    curl_setopt($curl, CURLOPT_COOKIEJAR, dirname(__FILE__) . '/cookie.txt'); #PHP>5.3.6 dirname(__FILE__) -> __DIR__
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-    $out = curl_exec($curl); #Инициируем запрос к API и сохраняем ответ в переменную
-    $notes = json_decode($out, false);
-    $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-    getError($code);
-    return $notes;
+function addNotes($lead,$auru,$amo){
+        $note = $amo->note;
+        $note['element_id'] = $lead;
+        $note['element_type'] = 2; // 1 - contact, 2 - lead
+        $note['note_type'] = \AmoCRM\Models\Note::COMMON; // @see https://developers.amocrm.ru/rest_api/notes_type.php
+        $note['text'] = "Товар с AU.RU: ".$auru->itemName.
+            "\n Вопрос клиента: ".$auru->quest.
+            " \n Cсылка на товар AU.RU: ".$auru->questionUrl.
+            " \n Логин в AU.RU: ".$auru->login.
+        " \n Дата вопроса: ".$auru->dateCreate;
+        $id = $note->apiAdd();
+        print_r($id);
+        return $id;
 }
 //// обработчик ошибок amoCRM
 //    function getError($code)

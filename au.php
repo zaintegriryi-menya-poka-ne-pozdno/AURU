@@ -48,10 +48,10 @@ function curlLogin(){
     curl_close($ch);
     echo '<pre>';
     $rrr = (array_reverse($rr));
-    $monthStart = '2021-03-17T00:00:00.087Z';
-    $monthEnd = '2021-03-28T00:00:00.087Z';
-    for($i = 0; $i <= count($rrr); ++$i) {
-        if($rrr[$i]->dateCreate >= $monthStart && $rrr[$i]->dateCreate <= $monthEnd) {
+    $monthStart = '2021-03-01T00:00:00.087Z';
+//    count($rrr);
+    for($i = 0; $i < 1; ++$i) {
+        if($rrr[$i]->dateCreate >= $monthStart){
 //            echo '<pre>';
 //            echo $id = $rrr[$i]->id;
 //            echo '<pre>';
@@ -71,8 +71,7 @@ function curlLogin(){
             echo '<pre>';
             var_dump('проверка $rrr[$i]->dateCreate >= $monthStart');
             var_dump('postaddNotes');
-            postaddNotes($rrr[$i],$subdomain);
-
+            postaddNotes($rrr[$i]);
         }
 
 

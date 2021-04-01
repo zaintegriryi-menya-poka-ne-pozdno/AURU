@@ -2,6 +2,7 @@
     "require": {
         "dotzero/amocrm": "^0.3.29",
         "amocrm/amocrm-api-library": "^0.4.6",
-        "amocrm/oauth2-amocrm": "^2.0"
+        "amocrm/oauth2-amocrm": "^2.0",
+        "nabarabane/amocrm": "~1.1"
     }
 }

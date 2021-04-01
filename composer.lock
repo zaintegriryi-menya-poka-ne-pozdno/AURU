@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9939d5e05d6a3b2b7807dfbc47e24a1",
+    "content-hash": "af9b24d54d996d0adefd46e4e22043d6",
     "packages": [
         {
             "name": "amocrm/amocrm-api-library",
@@ -1040,6 +1040,47 @@
                 "source": "https://github.com/thephpleague/oauth2-client/tree/2.6.0"
             },
             "time": "2020-10-28T02:03:40+00:00"
+        },
+        {
+            "name": "nabarabane/amocrm",
+            "version": "v1.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nabarabane/amocrm.git",
+                "reference": "1409c51a7a9ee6f40e618b2434ff271101f3db3b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nabarabane/amocrm/zipball/1409c51a7a9ee6f40e618b2434ff271101f3db3b",
+                "reference": "1409c51a7a9ee6f40e618b2434ff271101f3db3b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AmoCRM\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Denis Gerasimov",
+                    "email": "mailbox.gerasimov@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Простая обертка для работы с API AmoCRM",
+            "support": {
+                "issues": "https://github.com/nabarabane/amocrm/issues",
+                "source": "https://github.com/nabarabane/amocrm/tree/master"
+            },
+            "time": "2016-03-17T08:37:20+00:00"
         },
         {
             "name": "nesbot/carbon",
