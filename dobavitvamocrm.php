@@ -1,7 +1,6 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 require_once('addLeads.php');
-
 // include_once __DIR__ . '/unsorted/accept.php';
 function postaddNotes($auru)
 {

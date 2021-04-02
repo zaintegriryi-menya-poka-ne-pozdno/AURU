@@ -1,9 +1,8 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
+require_once ('vendor/autoload.php');
 $url = 'https://market-api.au.ru/v1/auth/token/';
     try {
         $menegers = [2375176, 2320036, 2375017, 3067300, 3067321, 6512170];
-        // Создание клиента
 //        $subdomain = 'tema24';            // Поддомен в амо срм
 //        $login = '666@2810101.ru';            // Логин в амо срм
 //        $apikey = 'ced8d14801596715d8b197956c30b6be13612412';       // api ключ
@@ -21,7 +20,7 @@ $url = 'https://market-api.au.ru/v1/auth/token/';
 //        $id = $lead->apiList($parameterss);
 //        echo '<pre>';
 //        print_r($id);
-        echo '<pre>';
+//        echo '<pre>';
 //        print_r($idnotes);
 //        print_r("id v notes->apiList");
         print_r($menegers);

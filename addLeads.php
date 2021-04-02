@@ -42,7 +42,7 @@ function addLeads($auru)
                 var_dump($idLotvcrm1);
                 $parameters = [
                     'type' => 'lead',
-                    'element_id' => $id[$idLotvcrm1]['id']
+                    'element_id' => $id[$iduservcrm1]['id']
                 ];
                 $notes = $amo->note;
                 $idnotes = $notes->apiList($parameters);
@@ -54,6 +54,8 @@ function addLeads($auru)
                     for ($j = 0; $j < count($idnotes); ++$j) {
                         $data[] = (substr($idnotes[$j]['text'], -24));
                     }
+                    var_dump($data);
+                    var_dump($auru->dateCreate);
                     if (in_array($auru->dateCreate, $data, true)){
                         var_dump("data == auru->dateCreate");
                         return $auru;
@@ -64,7 +66,7 @@ function addLeads($auru)
                         $lead = $amo->lead;
                         $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
                         $lead['pipeline_id'] = 4143913; // ID воронки
-                        $uplaeds = $lead->apiUpdate($id[$idvcrm1]['id']);
+                        $uplaeds = $lead->apiUpdate($id[$iduservcrm1]['id']);
                         print_r($uplaeds);
                         $note = $amo->note;
                         $note['element_id'] = $id[$idvcrm1]['id'];
@@ -82,7 +84,7 @@ function addLeads($auru)
                 } else {
                     var_dump("Notes-_Notes NULL");
                     $note = $amo->note;
-                    $note['element_id'] = $id[$idLotvcrm1]['id'];
+                    $note['element_id'] = $id[$iduservcrm1]['id'];
                     $note['element_type'] = 2; // 1 - contact, 2 - lead
                     $note['note_type'] = \AmoCRM\Models\Note::COMMON; // @see https://developers.amocrm.ru/rest_api/notes_type.php
                     $note['text'] = "Товар с AU.RU: " . $auru->itemName .
