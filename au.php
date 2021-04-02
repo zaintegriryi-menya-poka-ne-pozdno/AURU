@@ -50,7 +50,7 @@ function curlLogin(){
     $rrr = (array_reverse($rr));
     $monthStart = '2021-03-01T00:00:00.087Z';
 //    count($rrr);
-    for($i = 0; $i < 2; ++$i) {
+    for($i = 0; $i < count($rrr); ++$i) {
         if($rrr[$i]->dateCreate >= $monthStart){
 //            echo '<pre>';
 //            echo $id = $rrr[$i]->id;

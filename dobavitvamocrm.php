@@ -58,16 +58,16 @@ function postaddNotes($auru)
 //            }
 //            mysqli_free_result($result);
 //        }
-    print_r('postaddNotes');
-    print_r($auru);
-    print_r('auru');
-    print_r(addLeads($auru));
-    print_r('addLeads($auru)');
+    var_dump('postaddNotes');
+    var_dump($auru);
+    var_dump('auru');
+    var_dump(addLeads($auru));
+    var_dump('вышли с addLeads');
 //        var_dump($idadd+ "  Это $idadd");
 //        $idgetNotes = getNotes($idadd,$subdomain);
 //        var_dump($idgetNotes+ "  Это $idgetNotes");
 //        var_dump($idadd.' $idadd');
-    print_r('addNotes');
+    var_dump('addNotes');
 //        addNotes($auru,$idadd,$subdomain);
     return true;
 }

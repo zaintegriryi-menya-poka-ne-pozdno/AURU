@@ -21,6 +21,13 @@ function logger($msg, $prefix='')
     file_put_contents('log_'.$prefix.$name.'_'.date('md').'.txt', print_r( $notes,true).PHP_EOL, FILE_APPEND);
     file_put_contents('log_'.$prefix.$name.'_'.date('md').'.txt', print_r( $msg,true).PHP_EOL, FILE_APPEND);
 
+//    $subdomain = 'tema24';
+//    $login = '666@2810101.ru';
+//    $hash = 'ced8d14801596715d8b197956c30b6be13612412';
+//    $user=[
+//        'USER_LOGIN'=>$login,
+//        'USER_HASH'=>$hash
+//    ];
     $subdomain = 'testtset122';
     $login = 'testtset122@yandex.ru';
     $hash = 'e0c8ac87c24805e334cf7e786533806d71bed262';
@@ -67,6 +74,7 @@ function logger($msg, $prefix='')
     curl_close($curl); #Завершаем сеанс cURL
     file_put_contents('log_'.$prefix.$name.'_'.date('md').'.txt', print_r( $leads,true).PHP_EOL, FILE_APPEND);
     $idvAU = (int)(substr($leads->name, -8));
+//    if(($idmenegera == 2375176) || ($idmenegera == 2320036) || ($idmenegera == 2375017) || ($idmenegera == 3067300) || ($idmenegera == 3067321) || ($idmenegera == 6512170))
     if($idmenegera == 6912532){
         file_put_contents('log_'.$prefix.$name.'_'.date('md').'.txt', print_r( $idvAU,true).PHP_EOL, FILE_APPEND);
         file_put_contents('log_'.$prefix.$name.'_'.date('md').'.txt', print_r( $idmenegera,true).PHP_EOL, FILE_APPEND);
@@ -97,6 +105,7 @@ $idvAU = (int)(substr(($_POST['leads']['update'][0]['name']), -8));
 //}
 function curlLogin($idvAU,$ovetmeneger,$idmenegera)
 {
+//    if(($idmenegera == 2375176) || ($idmenegera == 2320036) || ($idmenegera == 2375017) || ($idmenegera == 3067300) || ($idmenegera == 3067321) || ($idmenegera == 6512170))
     if ($idmenegera == 6912532) {
         $prefix = '';
         $url = 'https://market-api.au.ru/v1/auth/token/';
