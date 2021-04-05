@@ -24,9 +24,43 @@ function addLeads($auru)
 //        print_r($id[0]['name']);
         print_r(count($id));
         for($i = 0; $i < count($id); ++$i) {
-            $iduservcrm[$i] = (int)(substr($id[$i]['name'], 5, -16));
-            $idLotvcrm[$i] = (int)(substr($id[$i]['name'], 13, -9));
-            $idvcrm[$i] = (int)(substr($id[$i]['name'], -8));
+//            $iduservcrm[$i] = (int)(substr($id[$i]['name'], 5, -16));
+//            $idLotvcrm[$i] = (int)(substr($id[$i]['name'], 13, -9));
+//            $idvcrm[$i] = (int)(substr($id[$i]['name'], -8));
+            $kolzap = true;
+            $userid = 0;
+            $lotid = 0;
+            $idid = 0;
+            for($j = 0; $j < strlen($id[$i]['name']); ++$j){
+                if ($id[$i]['name'][$j] == " "){
+                    $posprobel = $j;
+                }
+                if ($id[$i]['name'][$j] == ","){
+                    if ($kolzap == true){
+                        $poszap1 = $j+1;
+                        for ($g = $posprobel+1; $g<$j;++$g){
+                            $userid .= $id[$i]['name'][$g];
+                        }
+                        $kolzap = false;
+                        var_dump($kolzap);
+                    }
+                    elseif ($kolzap == false){
+                        $poszap2 = $j+1;
+                        if ($poszap2 != 0) {
+                            for ($y = $poszap1; $y<$j;++$y){
+                                $lotid .= $id[$i]['name'][$y];
+                            }
+                            for ($p = $poszap2; $p < strlen($id[$i]['name']); ++$p) {
+                                $idid .= $id[$i]['name'][$p];
+                            }
+                            $kolzap = null;
+                        }
+                    }
+                }
+            }
+            $iduservcrm[$i] = (int)($userid);
+            $idLotvcrm[$i] = (int)($lotid);
+            $idvcrm[$i] = (int)($idid);
         }
         var_dump($iduservcrm);
         var_dump($idvcrm);
@@ -83,6 +117,10 @@ function addLeads($auru)
                     }
                 } else {
                     var_dump("Notes-_Notes NULL");
+                    $lead = $amo->lead;
+                    $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
+                    $lead['pipeline_id'] = 4143913; // ID воронки
+                    $uplaeds = $lead->apiUpdate($id[$iduservcrm1]['id']);
                     $note = $amo->note;
                     $note['element_id'] = $id[$iduservcrm1]['id'];
                     $note['element_type'] = 2; // 1 - contact, 2 - lead
@@ -101,6 +139,9 @@ function addLeads($auru)
                 $lead = $amo->lead;
                 $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
                 $lead['pipeline_id'] = 4143913; // ID воронки
+//                $lead['status_id'] = 39069235; // ID статуса
+//                $lead->addCustomField(670307, '100');
+//                $lead->addCustomMultiField(670309,520025);
                 $idlead = $lead->apiAdd();
                 var_dump($idlead);
                 return addNotes((int)$idlead, $auru, $amo);
@@ -110,10 +151,16 @@ function addLeads($auru)
             $lead = $amo->lead;
             $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
             $lead['pipeline_id'] = 4143913; // ID воронки
+//            $lead['status_id'] = 39069235; // ID статуса
+//            $lead->addCustomField(670307, '100');
+//            $lead->addCustomMultiField(670309,520025);
             $idlead = $lead->apiAdd();
             var_dump($idlead);
             return addNotes((int)$idlead, $auru, $amo);
         }
+
+
+
 //        for($i = 0; $i < count($id); ++$i) {
 //            var_dump("это фор");
 //            var_dump($id[$i]['name']);
