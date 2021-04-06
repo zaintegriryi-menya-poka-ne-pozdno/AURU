@@ -11,7 +11,6 @@ function logger($msg, $prefix='')
     $idvAU = (int)(substr(($msg['leads']['update'][0]['name']),-8));
     $leads = $msg['leads'];
     $notes = $msg['notes'];
-
     file_put_contents('log_'.$prefix.$name.'_'.date('md').'.txt', print_r( $ovetmeneger,true).PHP_EOL, FILE_APPEND);
     file_put_contents('log_'.$prefix.$name.'_'.date('md').'.txt', print_r( $idsdelki,true).PHP_EOL, FILE_APPEND);
     file_put_contents('log_'.$prefix.$name.'_'.date('md').'.txt', print_r( $account_idmanagera,true).PHP_EOL, FILE_APPEND);
