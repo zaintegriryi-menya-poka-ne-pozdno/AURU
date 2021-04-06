@@ -11,6 +11,15 @@ function addNotes($lead,$auru,$amo){
             " \n Логин в AU.RU: ".$auru->login.
         " \n Дата вопроса: ".$auru->dateCreate;
         $id = $note->apiAdd();
+        $task = $amo->task;
+        $task->debug(true); // Режим отладки
+        $task['element_id'] = $lead;
+        $task['element_type'] = 2;
+        $task['task_type'] = "CALL";
+        $task['text'] = "Ответить на вопрос с AU.RU";
+//        $task['responsible_user_id'] = 6912532;
+//        $task['complete_till'] = '+1 DAY';
+        $idt = $task->apiAdd();
         print_r($id);
         return $id;
 }

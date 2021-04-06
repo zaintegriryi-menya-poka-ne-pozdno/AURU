@@ -18,7 +18,7 @@ function addLeads($auru)
             'status' => 39069232
         ];
         $lead = $amo->lead;
-        $id = $lead->apiList($parameters);
+        $id  = $lead->apiList($parameters);
         print_r($id);
         print_r("id v addLeads");
 //        print_r($id[0]['name']);
@@ -67,16 +67,34 @@ function addLeads($auru)
         var_dump($idLotvcrm);
         print_r($auru);
         if (in_array($auru->userId, $iduservcrm, true)) {
+            $idLotvcrm1 = 0;
+            $iduservcrm1 = 0;
             var_dump("userId уже есть");
-            $iduservcrm1 = array_search($auru->userId, $iduservcrm);
-            var_dump($iduservcrm1);
+            for ($i = 0; $i < count($id); ++$i) {
+                if ($auru->userId == $iduservcrm[$i]) {
+                    for ($j = 0; $j < count($id); ++$j) {
+                        if ($auru->lotId == $idLotvcrm[$j]) {
+                            if ($i == $j) {
+                                $iduservcrm1 = $i;
+                                $idLotvcrm1 = $j;
+                                var_dump($iduservcrm[$i]);
+                                var_dump($idLotvcrm[$j]);
+                                break;
+                            }
+                        }else {
+                            $idLotvcrm1 = $auru->lotId;
+                        }
+                    }
+                }
+            }
             if (in_array($auru->lotId, $idLotvcrm, true)) {
-                $idLotvcrm1 = array_search($auru->lotId, $idLotvcrm);
+//                $idLotvcrm1 = array_search($auru->lotId, $idLotvcrm);
                 var_dump("lotId уже есть");
+
                 var_dump($idLotvcrm1);
                 $parameters = [
                     'type' => 'lead',
-                    'element_id' => $id[$idLotvcrm1]['id']
+                    'element_id' => $id[$iduservcrm1]['id']
                 ];
                 $notes = $amo->note;
                 $idnotes = $notes->apiList($parameters);
@@ -84,21 +102,29 @@ function addLeads($auru)
                 print_r("id v notes->apiList");
                 print_r(count($idnotes));
                 $text = false;
-                for ($l = 0; $l<count($idnotes);++$l){
-                    if ($idnotes[$l]['text'] == ("Товар с AU.RU: " . $auru->itemName .
+                for ($l = 0; $l < count($idnotes); ++$l) {
+                    if ((strlen($idnotes[$l]['text'])) == ((strlen("Товар с AU.RU: " . $auru->itemName .
                             " \n Вопрос клиента: " . $auru->quest .
                             " \n Логин в AU.RU: " . $auru->login .
                             " \n Cсылка на товар AU.RU: " . $auru->questionUrl .
-                            " \n Дата вопроса: " . $auru->dateCreate)){
+                            " \n Дата вопроса: " . $auru->dateCreate))-1)) {
                         $text = true;
+                        var_dump((strlen($idnotes[$l]['text']))-1);
+                        var_dump(strlen("Товар с AU.RU: " . $auru->itemName .
+                            " \n Вопрос клиента: " . $auru->quest .
+                            " \n Логин в AU.RU: " . $auru->login .
+                            " \n Cсылка на товар AU.RU: " . $auru->questionUrl .
+                            " \n Дата вопроса: " . $auru->dateCreate));
+                        var_dump($text);
                     }
-                    var_dump($idnotes[$l]['text']);
-                    var_dump("Товар с AU.RU: " . $auru->itemName .
+                    var_dump((strlen($idnotes[$l]['text']))-1);
+                    var_dump(strlen("Товар с AU.RU: " . $auru->itemName .
                         " \n Вопрос клиента: " . $auru->quest .
                         " \n Логин в AU.RU: " . $auru->login .
                         " \n Cсылка на товар AU.RU: " . $auru->questionUrl .
-                        " \n Дата вопроса: " . $auru->dateCreate);
+                        " \n Дата вопроса: " . $auru->dateCreate));
                     var_dump($text);
+
                 }
                 if (in_array($auru->id, $idvcrm, true)) {
                     var_dump("Notes уже есть");
@@ -111,48 +137,24 @@ function addLeads($auru)
                         var_dump("data == auru->dateCreate");
                         return $auru;
                     }
-                    else {
+                    elseif ($idLotvcrm1 != 0) {
                         $idvcrm1 = array_search($auru->id, $idvcrm);
                         var_dump($idvcrm1);
-                        if ($text == false) {
-                            $lead = $amo->lead;
-                            $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
-                            $lead['pipeline_id'] = 4143913; // ID воронки
-                            $uplaeds = $lead->apiUpdate($id[$idLotvcrm1]['id']);
-                            print_r($uplaeds);
-                            $note = $amo->note;
-                            $note['element_id'] = $id[$idLotvcrm1]['id'];
-                            $note['element_type'] = 2; // 1 - contact, 2 - lead
-                            $note['note_type'] = \AmoCRM\Models\Note::COMMON; // @see https://developers.amocrm.ru/rest_api/notes_type.php
-                            $note['text'] = "Товар с AU.RU: " . $auru->itemName .
-                                " \n Вопрос клиента: " . $auru->quest .
-                                " \n Логин в AU.RU: " . $auru->login .
-                                " \n Cсылка на товар AU.RU: " . $auru->questionUrl .
-                                " \n Дата вопроса: " . $auru->dateCreate;
-                            $id = $note->apiAdd();
-                            print_r($id);
-                            return $id;
-                        }
+                        $lead = $amo->lead;
+                        $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
+                        $lead['pipeline_id'] = 4143913; // ID воронки
+                        $uplaeds = $lead->apiUpdate($id[$iduservcrm1]['id']);
+                        print_r($uplaeds);
+                        return addNotes($id[$idvcrm1]['id'], $auru, $amo);
                     }
-                } else {
+                } elseif ($idLotvcrm1 != 0) {
                     if ($text == false) {
                         var_dump("Notes-_Notes NULL");
                         $lead = $amo->lead;
                         $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
                         $lead['pipeline_id'] = 4143913; // ID воронки
-                        $uplaeds = $lead->apiUpdate($id[$idLotvcrm1]['id']);
-                        $note = $amo->note;
-                        $note['element_id'] = $id[$idLotvcrm1]['id'];
-                        $note['element_type'] = 2; // 1 - contact, 2 - lead
-                        $note['note_type'] = \AmoCRM\Models\Note::COMMON; // @see https://developers.amocrm.ru/rest_api/notes_type.php
-                        $note['text'] = "Товар с AU.RU: " . $auru->itemName .
-                            " \n Вопрос клиента: " . $auru->quest .
-                            " \n Логин в AU.RU: " . $auru->login .
-                            " \n Cсылка на товар AU.RU: " . $auru->questionUrl .
-                            " \n Дата вопроса: " . $auru->dateCreate;
-                        $id = $note->apiAdd();
-                        print_r($id);
-                        return $id;
+                        $uplaeds = $lead->apiUpdate($id[$iduservcrm1]['id']);
+                        return addNotes($id[$iduservcrm1]['id'], $auru, $amo);
                     }
                 }
             } else {
@@ -181,119 +183,153 @@ function addLeads($auru)
         }
 
 
-
-//        for($i = 0; $i < count($id); ++$i) {
-//            var_dump("это фор");
-//            var_dump($id[$i]['name']);
-//            $iduservcrm = (int)(substr($id[$i]['name'], 5, -16));
-//            $idvcrm = (int)(substr($id[$i]['name'], 13, -9));
-//            $idLotvcrm = (int)(substr($id[$i]['name'], -8));
-//            var_dump($iduservcrm);
-//            var_dump($idvcrm);
-//            var_dump($idLotvcrm);
-//            if ($iduservcrm == $auru->lotId) {
-//                if ($idvcrm == $auru->lotId) {
-//                    var_dump("Leads уже есть");
-//                    $parameters = [
-//                        'type' => 'lead',
-//                        'element_id' => $id[$i]['id']
-//                    ];
-//                    $notes = $amo->note;
-//                    $idnotes = $notes->apiList($parameters);
-//                    print_r($idnotes);
-//                    print_r("id v notes->apiList");
-//                    print_r(count($idnotes));
-//                    if ($idLotvcrm == $auru->id) {
-//                        var_dump("Notes уже есть");
-//                        for ($j = 0; $j < count($idnotes); ++$j) {
-//                            $data = (substr($idnotes[$j]['text'], -24));
-//                            if ($data == $auru->dateCreate) {
-//                                var_dump("data == auru->dateCreate");
-//                                return true;
-//                            } else {
-//                                $note = $amo->note;
-//                                $note['element_id'] = $id[$i]['id'];
-//                                $note['element_type'] = 2; // 1 - contact, 2 - lead
-//                                $note['note_type'] = \AmoCRM\Models\Note::COMMON; // @see https://developers.amocrm.ru/rest_api/notes_type.php
-//                                $note['text'] = "Товар с AU.RU: " . $auru->itemName .
-//                                    "\n Вопрос клиента: " . $auru->quest .
-//                                    " \n Логин в AU.RU: " . $auru->login .
-//                                    " \n Cсылка на товар AU.RU: " . $auru->questionUrl .
-//                                    " \n Дата вопроса: " . $auru->dateCreate;
-//                                $id = $note->apiAdd();
-//                                print_r($id);
-//                                return $id;
+//        if (in_array($auru->userId, $iduservcrm, true)) {
+//            var_dump("userId уже есть");
+//            $iduservcrm1 = array_search($auru->userId, $iduservcrm);
+//            $idd = $iduservcrm1;
+//            var_dump($iduservcrm1);
+//            if (in_array($auru->lotId, $idLotvcrm, true)) {
+//                for ($i = 0; $i < count($id); ++$i) {
+//                    if ($auru->userId == $iduservcrm[$i]) {
+//                        for ($j = 0; $j < count($id); ++$j) {
+//                            if ($auru->lotId == $idLotvcrm[$j]) {
+//                                if ($i == $j) {
+//                                    $idd = $i;
+//                                    break;
+//                                }
 //                            }
-//                            var_dump($idnotes[$j]['text']);
 //                        }
-//                        return $idLotvcrm;
-//                    } else {
-//                        var_dump("Notes NULL");
-//                        $note = $amo->note;
-//                        $note['element_id'] = $id[$i]['id'];
-//                        $note['element_type'] = 2; // 1 - contact, 2 - lead
-//                        $note['note_type'] = \AmoCRM\Models\Note::COMMON; // @see https://developers.amocrm.ru/rest_api/notes_type.php
-//                        $note['text'] = "Товар с AU.RU: " . $auru->itemName .
-//                            "\n Вопрос клиента: " . $auru->quest .
+//                    }
+//                }
+//
+//                $idLotvcrm1 = array_search($auru->lotId, $idLotvcrm);
+//                var_dump("lotId уже есть");
+//                var_dump($idLotvcrm1);
+//                $parameters = [
+//                    'type' => 'lead',
+//                    'element_id' => $id[$idd]['id']
+//                ];
+//                $notes = $amo->note;
+//                $idnotes = $notes->apiList($parameters);
+//                print_r($idnotes);
+//                print_r("id v notes->apiList");
+//                print_r(count($idnotes));
+//                $text = false;
+//                for ($l = 0; $l < count($idnotes); ++$l) {
+//                    if ($idnotes[$l]['text'] == ("Товар с AU.RU: " . $auru->itemName .
+//                            " \n Вопрос клиента: " . $auru->quest .
 //                            " \n Логин в AU.RU: " . $auru->login .
 //                            " \n Cсылка на товар AU.RU: " . $auru->questionUrl .
-//                            " \n Дата вопроса: " . $auru->dateCreate;
-//                        $id = $note->apiAdd();
-//                        print_r($id);
-//                        return $idLotvcrm;
+//                            " \n Дата вопроса: " . $auru->dateCreate)) {
+//                        $text = true;
 //                    }
-//                    return $idvcrm;
-//                } else {
-//                    var_dump("Leads NULL");
-////                for($j = $i; $j < count($id); ++$j) {
-////                    var_dump($id[$j]);
-////                    if ($idvcrm = (int)(substr($id[$j]['name'], 5, -8)) == $auru->lotId){
-////                        return true;
-////                    }else{
-////                        $lead = $amo->lead;
-////                        $lead['name'] = 'AU.RU '. $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
-////                        $lead['pipeline_id'] = 4143913; // ID воронки
-////                        $idlead = $lead->apiAdd();
-////                        return addNotes((int)$idlead,$auru,$amo);
-////                    }
-////                }
-//                    $lead = $amo->lead;
-//                    $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
-//                    $lead['pipeline_id'] = 4143913; // ID воронки
-//                    $idlead = $lead->apiAdd();
-//                    return addNotes((int)$idlead, $auru, $amo);
+//                    var_dump($idnotes[$l]['text']);
+//                    var_dump("Товар с AU.RU: " . $auru->itemName .
+//                        " \n Вопрос клиента: " . $auru->quest .
+//                        " \n Логин в AU.RU: " . $auru->login .
+//                        " \n Cсылка на товар AU.RU: " . $auru->questionUrl .
+//                        " \n Дата вопроса: " . $auru->dateCreate);
+//                    var_dump($text);
 //                }
+//                if (in_array($auru->id, $idvcrm, true)) {
+//                    var_dump("Notes уже есть");
+//                    for ($j = 0; $j < count($idnotes); ++$j) {
+//                        $data[] = (substr($idnotes[$j]['text'], -24));
+//                    }
+//                    var_dump($data);
+//                    var_dump($auru->dateCreate);
+//                    if (in_array($auru->dateCreate, $data, true)) {
+//                        var_dump("data == auru->dateCreate");
+//                        return $auru;
+//                    } else {
+//                        for ($i = 0; $i < count($id); ++$i) {
+//                            if ($auru->lotId == $idLotvcrm[$i]) {
+//                                for ($j = 0; $j < count($id); ++$j) {
+//                                    if ($auru->id == $idvcrm[$j]) {
+//                                        if ($i == $j) {
+//                                            $idvcrm1 = array_search($auru->id, $idvcrm);
+//                                            var_dump($idvcrm1);
+//                                            if ($text == false) {
+//                                                $lead = $amo->lead;
+//                                                $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
+//                                                $lead['pipeline_id'] = 4143913; // ID воронки
+//                                                $uplaeds = $lead->apiUpdate($id[$i]['id']);
+//                                                print_r($uplaeds);
+//                                                $note = $amo->note;
+//                                                $note['element_id'] = $id[$i]['id'];
+//                                                $note['element_type'] = 2; // 1 - contact, 2 - lead
+//                                                $note['note_type'] = \AmoCRM\Models\Note::COMMON; // @see https://developers.amocrm.ru/rest_api/notes_type.php
+//                                                $note['text'] = "Товар с AU.RU: " . $auru->itemName .
+//                                                    " \n Вопрос клиента: " . $auru->quest .
+//                                                    " \n Логин в AU.RU: " . $auru->login .
+//                                                    " \n Cсылка на товар AU.RU: " . $auru->questionUrl .
+//                                                    " \n Дата вопроса: " . $auru->dateCreate;
+//                                                $id = $note->apiAdd();
+//                                                print_r($id);
+//                                                return $id;
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    for ($i = 0; $i < count($id); ++$i) {
+//                        if ($auru->userId == $iduservcrm[$i]) {
+//                            for ($j = 0; $j < count($id); ++$j) {
+//                                if ($auru->lotId == $idLotvcrm[$j]) {
+//                                    if ($i == $j) {
+//                                        if ($text == false) {
+//                                            var_dump("Notes-_Notes NULL");
+//                                            $lead = $amo->lead;
+//                                            $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
+//                                            $lead['pipeline_id'] = 4143913; // ID воронки
+//                                            $uplaeds = $lead->apiUpdate($id[$i]['id']);
+//                                            return addNotes((int)$id[$i]['id'], $auru, $amo);
+//                                        }
+//                                    }
+//                                    var_dump("Leads NULL");
+//                                    $lead = $amo->lead;
+//                                    $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
+//                                    $lead['pipeline_id'] = 4143913; // ID воронки
+////            $lead['status_id'] = 39069235; // ID статуса
+////            $lead->addCustomField(670307, '100');
+////            $lead->addCustomMultiField(670309,520025);
+//                                    $idlead = $lead->apiAdd();
+//                                    var_dump($idlead);
+//                                    return addNotes((int)$idlead, $auru, $amo);
+//
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            } else {
+//                var_dump("userId уже есть но Leads NULL");
+//                $lead = $amo->lead;
+//                $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
+//                $lead['pipeline_id'] = 4143913; // ID воронки
+////                $lead['status_id'] = 39069235; // ID статуса
+////                $lead->addCustomField(670307, '100');
+////                $lead->addCustomMultiField(670309,520025);
+//                $idlead = $lead->apiAdd();
+//                var_dump($idlead);
+//                return addNotes((int)$idlead, $auru, $amo);
+//
 //            }
+//        }else {
+//            var_dump("Leads NULL");
+//            $lead = $amo->lead;
+//            $lead['name'] = 'AU.RU ' . $auru->userId . ',' . $auru->lotId . ',' . $auru->id;
+//            $lead['pipeline_id'] = 4143913; // ID воронки
+////            $lead['status_id'] = 39069235; // ID статуса
+////            $lead->addCustomField(670307, '100');
+////            $lead->addCustomMultiField(670309,520025);
+//            $idlead = $lead->apiAdd();
+//            var_dump($idlead);
+//            return addNotes((int)$idlead, $auru, $amo);
 //        }
-//        $lead = $amo->lead;
-//        $lead['name'] = 'AU.RU ' . $auru->lotId . ',' . $auru->id;
-//        $lead['pipeline_id'] = 4143913; // ID воронки
-////        $lead['status_id'] = 39069235; // ID статуса
-////        // $lead->addCustomField(305117, [ // ID  поля в которое будт приходить заявки
-////        //     [$_POST['city']], // сюда вписать значение из атрибута "name" пример: <input name="phone">
-////        // ]);
-////
-//        $id = $lead->apiAdd();
-
-//        // Получение экземпляра модели для работы с контактами
-//        $contact = $amo->contact;
-//
-//        // Заполнение полей модели
-//        $contact['name'] = isset($_POST['name']) ? $_POST['name'] : 'Не указано';
-//        $contact['linked_leads_id'] = [(int)$id];
-//
-//        $contact->addCustomField(305117, [
-//            [$_POST['city']],
-//        ]);
-//
-//        $contact->addCustomField(304033, [
-//            [$_POST['email'], 'PRIV'],
-//        ]);
-//
-//
-//
-//        // Добавление нового контакта и получение его ID
-//        $id = $contact->apiAdd();
 
 
     } catch (\AmoCRM\Exception $e) {
