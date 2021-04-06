@@ -52,6 +52,7 @@ function curlLogin(){
 //    count($rrr);
     for($i = 0; $i < 2; ++$i) {
         if($rrr[$i]->dateCreate >= $monthStart){
+
 //            echo '<pre>';
 //            echo $id = $rrr[$i]->id;
 //            echo '<pre>';

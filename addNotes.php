@@ -22,6 +22,7 @@ function addNotes($lead,$auru,$amo){
         $idt = $task->apiAdd();
         print_r($id);
         return $id;
+
 }
 //// обработчик ошибок amoCRM
 //    function getError($code)

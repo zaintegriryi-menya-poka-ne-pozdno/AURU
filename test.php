@@ -15,7 +15,6 @@ $subdomain = 'emomalisharifov98yandexru';
             'limit_rows' => 10,
         ]));
 
-
     } catch (\AmoCRM\Exception $e) {
         printf('Error (%d): %s' . PHP_EOL, $e->getCode(), $e->getMessage());
     }

@@ -9,6 +9,7 @@ function addLeads($auru)
         $apikey = 'e0c8ac87c24805e334cf7e786533806d71bed262';       // api ключ
         $amo = new \AmoCRM\Client($subdomain, $login, $apikey);
         // Вывести полученые из амо данные
+
         // echo '<pre>';
         // print_r($amo->account->apiCurrent());
         // echo '</pre>';

@@ -41,6 +41,7 @@ function postaddNotes($auru)
 //                            return false;
 //                        }
 //                    }
+
 //                    else{
 //                        var_dump("Нет! auru->lotId".$auru->lotId);
 //                        $query = "INSERT INTO `au` (`id`, `lotId`, `userId`, `quest`, `login`, `itemName`, `questionUrl`, `dateCreate`) VALUES
